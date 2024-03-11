@@ -8,8 +8,9 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { PaperProvider } from 'react-native-paper';
+import { PaperProvider } from "react-native-paper";
 
+import { SnackbarProvider } from "@/components/SnackBarProvider";
 import { useColorScheme } from "@/components/useColorScheme";
 
 export {
@@ -55,13 +56,18 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <PaperProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="(product)/modal/[id]"
-            options={{ presentation: "modal", headerTitle: "Ajouter un produit"}}
-          />
-        </Stack>
+        <SnackbarProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="(product)/modal/[id]"
+              options={{
+                presentation: "modal",
+                headerTitle: "Ajouter un produit",
+              }}
+            />
+          </Stack>
+        </SnackbarProvider>
       </PaperProvider>
     </ThemeProvider>
   );

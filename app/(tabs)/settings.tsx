@@ -1,10 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
+import { Keyboard } from "react-native";
 
 import { View } from "@/components/Themed";
 import { useAsyncStorage } from "@/hooks/useAsyncStorage";
 import { Button, HelperText, TextInput } from "react-native-paper";
 
+import { useSnackbar } from "@/components/SnackBarProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -17,6 +18,8 @@ const formSchema = z.object({
 });
 
 export default function Settings() {
+  const showSnackbar = useSnackbar();
+
   const [api_url, setApiUrl, hasApiUrlRetrieved] = useAsyncStorage(
     "api_url",
     ""
@@ -32,12 +35,19 @@ export default function Settings() {
     "help"
   );
 
+  const [entity_name, setEntityName, hasEntityNameRetrieved] = useAsyncStorage(
+    "entity_name",
+    ""
+  );
+
+  const [hideSecrets, setHideSecrets, hasHideSecretsRetrieved] =
+    useAsyncStorage("hide_secrets", true);
+
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
-    getValues,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -65,6 +75,7 @@ export default function Settings() {
     entity_id,
   }: z.infer<typeof formSchema>) => {
     try {
+      Keyboard.dismiss();
       const res = await fetch(`${api_url}/api/states/${entity_id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -76,17 +87,43 @@ export default function Settings() {
         setToken(token);
         setEntityId(entity_id);
         setEntityIcon(body.attributes.icon.split(":")[1]);
-        alert("Connection successful");
-      } else alert("Connection failed");
+        setEntityName(body.attributes.friendly_name);
+
+        showSnackbar({
+          message: `Connection successful to ${api_url}`,
+          type: "success",
+        });
+      } else
+        showSnackbar({
+          message: `Connection failed, status: ${res.status}`,
+          type: "error",
+        });
     } catch (e) {
       console.error(e);
-      alert("Connection failed");
+      showSnackbar({
+        message: `Connection failed, error: ${
+          (e as Error).message ?? "Unknown error"
+        }`,
+        type: "error",
+      });
     }
   };
 
+  useEffect(() => {
+    if (
+      hasEntityIdRetrieved &&
+      hasTokenRetrieved &&
+      hasApiUrlRetrieved &&
+      entity_id &&
+      token &&
+      api_url
+    )
+      check({ api_url, token, entity_id });
+  }, [hasApiUrlRetrieved, hasTokenRetrieved, hasEntityIdRetrieved]);
+
   return (
     <>
-      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+      <StatusBar style={"auto"} />
       <View
         style={{
           flex: 1,
@@ -105,9 +142,22 @@ export default function Settings() {
                 mode="outlined"
                 label={"API url"}
                 value={value}
+                keyboardType="url"
+                autoComplete="url"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 left={<TextInput.Icon icon="web" size={20} />}
+                right={
+                  value.trim().length && <TextInput.Icon
+                    icon="delete"
+                    size={20}
+                    onPress={() => {
+                      setValue("api_url", "");
+                      setApiUrl("");
+                    }}
+                  />
+                }
+                secureTextEntry={hideSecrets}
               />
             )}
             name="api_url"
@@ -134,7 +184,22 @@ export default function Settings() {
                 value={value}
                 onBlur={onBlur}
                 onChangeText={onChange}
+                autoComplete="off"
+                autoCapitalize="none"
                 left={<TextInput.Icon icon="key" size={20} />}
+                right={
+                  value.trim().length && (
+                    <TextInput.Icon
+                      icon="delete"
+                      size={20}
+                      onPress={() => {
+                        setValue("token", "");
+                        setToken("");
+                      }}
+                    />
+                  )
+                }
+                secureTextEntry={hideSecrets}
               />
             )}
             name="token"
@@ -159,9 +224,23 @@ export default function Settings() {
                 mode="outlined"
                 label={"Entity id"}
                 value={value}
+                autoComplete="off"
+                // remove auto uppercase
+                autoCapitalize="none"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 left={<TextInput.Icon icon={entity_icon} size={20} />}
+                right={
+                  value.trim().length && <TextInput.Icon
+                    icon="delete"
+                    size={20}
+                    onPress={() => {
+                      setValue("entity_id", "");
+                      setEntityId("");
+                      setEntityIcon("help");
+                    }}
+                  />
+                }
               />
             )}
             name="entity_id"
@@ -175,12 +254,15 @@ export default function Settings() {
             <HelperText type="error">{errors.entity_id.message}</HelperText>
           )}
         </View>
-        <Button
-          icon="check"
-          mode="contained-tonal"
-          onPress={handleSubmit(check)}
-        >
+        <Button icon="check" mode="contained" onPress={handleSubmit(check)}>
           Check connection
+        </Button>
+        <Button
+          icon={hideSecrets ? "eye-off" : "eye"}
+          mode="contained-tonal"
+          onPress={() => setHideSecrets(!hideSecrets)}
+        >
+          {hideSecrets ? "Show secrets" : "Hide secrets"}
         </Button>
       </View>
     </>
