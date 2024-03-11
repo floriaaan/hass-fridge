@@ -2,11 +2,11 @@ import { View } from "@/components/Themed";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 
-import { Controller, useForm } from "react-hook-form";
+import { Image } from "react-native";
 import { Button, HelperText, Snackbar, TextInput } from "react-native-paper";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Image } from "react-native";
+import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -87,7 +87,18 @@ export default function ModalScreen() {
     <>
       <View style={{ flex: 1, padding: 16, gap: 16, paddingBottom: 32 }}>
         <View style={{ flex: 1, gap: 16 }}>
-          <Image src={image} style={{ width: 200, height: 200 }} />
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "row",
+            }}
+          >
+            <Image
+              src={image}
+              style={{ width: "40%", height: "auto", aspectRatio: "1/1" }}
+            />
+          </View>
           <Controller
             control={control}
             rules={{
@@ -99,6 +110,8 @@ export default function ModalScreen() {
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
+                label={"Nom du produit"}
+                left={<TextInput.Icon icon="food" />}
               />
             )}
             name="item"
@@ -108,15 +121,14 @@ export default function ModalScreen() {
           )}
           <Controller
             control={control}
-            rules={{
-              required: true,
-            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 mode="outlined"
                 onBlur={onBlur}
                 onChangeText={onChange}
                 value={value}
+                label={"Description"}
+                left={<TextInput.Icon icon="text" />}
               />
             )}
             name="description"
@@ -126,9 +138,7 @@ export default function ModalScreen() {
           )}
           <Controller
             control={control}
-            rules={{
-              required: true,
-            }}
+            rules={{ required: true }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 mode="outlined"
