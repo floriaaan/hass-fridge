@@ -1,10 +1,11 @@
-import { useLocale } from "@/hooks/useLocale";
 import { useIsFocused } from "@react-navigation/native";
 import { BarcodeScanningResult, Camera, CameraView } from "expo-camera/next";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform, Text, View } from "react-native";
 import { AnimatedFAB } from "react-native-paper";
+
+import { useLocale } from "@/hooks/useLocale";
 
 export default function Scanner() {
   const { t } = useLocale();
@@ -26,11 +27,9 @@ export default function Scanner() {
     router.push(`/modal/${data}`);
   };
 
-  if (hasPermission === null)
-    return <Text>{t("scanner.requesting_permission")}</Text>;
+  if (hasPermission === null) return <Text>{t("scanner.requesting_permission")}</Text>;
 
-  if (hasPermission === false)
-    return <Text>{t("scanner.no_camera_permission")}</Text>;
+  if (hasPermission === false) return <Text>{t("scanner.no_camera_permission")}</Text>;
 
   return (
     <View style={{ flex: 1 }}>
@@ -59,14 +58,12 @@ export default function Scanner() {
               style={{ width: "100%", height: "100%" }}
             />
           )}
-          {Platform.OS === "web" && (
-            <Text>{t("scanner.web_not_supported")}</Text>
-          )}
+          {Platform.OS === "web" && <Text>{t("scanner.web_not_supported")}</Text>}
         </>
       )}
       {scanned && (
         <AnimatedFAB
-          icon={"plus"}
+          icon="plus"
           label={t("scanner.scan_again_button_label")}
           visible
           extended

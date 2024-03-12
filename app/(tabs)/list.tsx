@@ -1,9 +1,9 @@
+import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
+import { Appbar } from "react-native-paper";
 
 import { Text, View } from "@/components/Themed";
 import { useLocale } from "@/hooks/useLocale";
-import { StatusBar } from "expo-status-bar";
-import { Appbar } from "react-native-paper";
 
 export default function ProductList() {
   const { t } = useLocale();
@@ -12,7 +12,7 @@ export default function ProductList() {
       <Appbar.Header>
         <Appbar.Content title={t("product_list.title")} />
       </Appbar.Header>
-      <StatusBar style={"auto"} />
+      <StatusBar style="auto" />
       <View style={styles.container}>
         <Text style={styles.title}>{t("product_list.unavailable")}</Text>
       </View>

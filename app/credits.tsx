@@ -1,6 +1,7 @@
-import { Text, View } from "@/components/Themed";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { Link } from "expo-router";
+
+import { Text, View } from "@/components/Themed";
 
 export default function CreditsScreen() {
   return (
@@ -75,9 +76,7 @@ export default function CreditsScreen() {
             </Link>
           </Text>
         </View>
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-          Maintainers and contributors
-        </Text>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>Maintainers and contributors</Text>
         <View style={{ gap: 8 }}>
           <Text>
             <Link

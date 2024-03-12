@@ -1,21 +1,15 @@
-import { View } from "@/components/Themed";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-
+import { Controller, useForm } from "react-hook-form";
 import { Image, Keyboard } from "react-native";
-import {
-  Button,
-  HelperText,
-  TextInput,
-  TouchableRipple,
-} from "react-native-paper";
+import { Button, HelperText, TextInput, TouchableRipple } from "react-native-paper";
+import { z } from "zod";
 
 import { useSnackbar } from "@/components/SnackBarProvider";
+import { View } from "@/components/Themed";
 import { useAsyncStorage } from "@/hooks/useAsyncStorage";
 import { useLocale } from "@/hooks/useLocale";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
 
 export default function AddItemScreen() {
   const { t } = useLocale();
@@ -28,7 +22,7 @@ export default function AddItemScreen() {
   const [api_url, , hasApiUrlRetrieved] = useAsyncStorage("api_url", "");
   const [token, , hasTokenRetrieved] = useAsyncStorage("token", "");
   const [entity_id, , hasEntityIdRetrieved] = useAsyncStorage("entity_id", "");
-  const [entity_name, , hasENRetrieved] = useAsyncStorage("entity_name", "");
+  const [entity_name] = useAsyncStorage("entity_name", "");
 
   const formSchema = z.object({
     item: z.string().min(1, t("add_item.errors.required")),
@@ -57,12 +51,7 @@ export default function AddItemScreen() {
     },
   });
   const hasErrorsWithParams =
-    !hasApiUrlRetrieved ||
-    !hasTokenRetrieved ||
-    !hasEntityIdRetrieved ||
-    !api_url ||
-    !token ||
-    !entity_id;
+    !hasApiUrlRetrieved || !hasTokenRetrieved || !hasEntityIdRetrieved || !api_url || !token || !entity_id;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -117,23 +106,12 @@ export default function AddItemScreen() {
   useEffect(() => {
     const getData = async () => {
       try {
-        const res = await fetch(
-          `https://world.openfoodfacts.org/api/v2/product/${id}`
-        );
+        const res = await fetch(`https://world.openfoodfacts.org/api/v2/product/${id}`);
         const { product } = (await res.json()) || {};
-        const {
-          product_name_fr,
-          product_name_en,
-          product_name,
-          categories,
-          image_url,
-        } = product || {};
+        const { product_name_fr, product_name_en, product_name, categories, image_url } = product || {};
         setValue("item", product_name_fr || product_name_en || product_name);
 
-        setValue(
-          "description",
-          categories?.split(",").slice(0, 3).join(",") || "N/A"
-        );
+        setValue("description", categories?.split(",").slice(0, 3).join(",") || "N/A");
 
         setImage(image_url);
       } catch (e) {
@@ -191,9 +169,7 @@ export default function AddItemScreen() {
               )}
               name="item"
             />
-            {errors.item && (
-              <HelperText type="error">{errors.item.message}</HelperText>
-            )}
+            {errors.item && <HelperText type="error">{errors.item.message}</HelperText>}
           </View>
           <View>
             <Controller
@@ -210,9 +186,7 @@ export default function AddItemScreen() {
               )}
               name="description"
             />
-            {errors.description && (
-              <HelperText type="error">{errors.description.message}</HelperText>
-            )}
+            {errors.description && <HelperText type="error">{errors.description.message}</HelperText>}
           </View>
           <View>
             <Controller
@@ -229,25 +203,17 @@ export default function AddItemScreen() {
                     <TextInput.Icon
                       icon="sync"
                       size={20}
-                      onPress={() =>
-                        onChange(new Date().toISOString().split("T")[0])
-                      }
+                      onPress={() => onChange(new Date().toISOString().split("T")[0])}
                     />
                   }
                   onBlur={onBlur}
                   onChangeText={(text: string) => {
-                    if (
-                      text.length > 10 &&
-                      getValues("due_date").length < text.length
-                    )
-                      return;
+                    if (text.length > 10 && getValues("due_date").length < text.length) return;
 
                     let newText = text.replace(/\D/g, ""); // Remove all non-numeric characters
-                    if (newText.length > 4)
-                      newText = newText.slice(0, 4) + "-" + newText.slice(4);
+                    if (newText.length > 4) newText = newText.slice(0, 4) + "-" + newText.slice(4);
 
-                    if (newText.length > 7)
-                      newText = newText.slice(0, 7) + "-" + newText.slice(7);
+                    if (newText.length > 7) newText = newText.slice(0, 7) + "-" + newText.slice(7);
 
                     onChange(newText);
                   }}
@@ -257,9 +223,7 @@ export default function AddItemScreen() {
               name="due_date"
             />
 
-            {errors.due_date && (
-              <HelperText type="error">{errors.due_date.message}</HelperText>
-            )}
+            {errors.due_date && <HelperText type="error">{errors.due_date.message}</HelperText>}
           </View>
         </View>
 
@@ -271,9 +235,7 @@ export default function AddItemScreen() {
                 {t("add_item.errors.helper")}
               </HelperText>
               <Link href="/settings">
-                <Button icon="cog-outline">
-                  {t("add_item.errors.helper_settings_link")}
-                </Button>
+                <Button icon="cog-outline">{t("add_item.errors.helper_settings_link")}</Button>
               </Link>
             </View>
           ) : null}
@@ -281,9 +243,7 @@ export default function AddItemScreen() {
             icon={isSubmitting ? "loading" : "content-save"}
             loading={isSubmitting}
             disabled={hasErrorsWithParams || isSubmitting}
-            mode={
-              hasErrorsWithParams || isSubmitting ? "outlined" : "contained"
-            }
+            mode={hasErrorsWithParams || isSubmitting ? "outlined" : "contained"}
             onPress={handleSubmit(onSubmit)}
           >
             {t("add_item.save_button_label")}

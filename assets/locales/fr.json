@@ -36,7 +36,7 @@
     "title": "Développeur"
   },
   "add_item": {
-    "title":"Ajouter un produit",
+    "title": "Ajouter un produit",
     "dismiss_keyboard_helper": "Pour fermer le clavier, appuyez sur l'image.",
     "item_label": "Nom de l'article",
     "description_label": "Description (facultatif)",

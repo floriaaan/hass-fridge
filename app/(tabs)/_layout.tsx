@@ -1,22 +1,18 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { CommonActions } from "@react-navigation/native";
 import { Tabs, router } from "expo-router";
 import React, { useState } from "react";
+import { BottomNavigation } from "react-native-paper";
 
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
+import { useLocale } from "@/hooks/useLocale";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
+function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["name"]; color: string }) {
   return <FontAwesome size={24} {...props} />;
 }
-
-import { useLocale } from "@/hooks/useLocale";
-import { CommonActions } from "@react-navigation/native";
-import { BottomNavigation } from "react-native-paper";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -65,9 +61,9 @@ export default function TabLayout() {
               options.tabBarLabel !== undefined
                 ? options.tabBarLabel
                 : options.title !== undefined
-                ? options.title
-                : // @ts-ignore - we know it's a string
-                  route.title;
+                  ? options.title
+                  : // @ts-ignore - we know it's a string
+                    route.title;
 
             return label;
           }}
@@ -79,9 +75,7 @@ export default function TabLayout() {
         options={{
           title: t("tabs.scanner"),
           headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="barcode" color={color} />
-          ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="barcode" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -98,7 +92,7 @@ export default function TabLayout() {
           tabPress: (e) => {
             setCounter((prev) => prev + 1);
             if (!(counter >= 4)) return;
-            
+
             e.preventDefault();
             setCounter(0);
             router.push("/developper");

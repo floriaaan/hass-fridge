@@ -1,17 +1,16 @@
-import { StatusBar } from "expo-status-bar";
-import { Keyboard } from "react-native";
-
-import { View } from "@/components/Themed";
-import { useAsyncStorage } from "@/hooks/useAsyncStorage";
-import { Appbar, Button, HelperText, TextInput } from "react-native-paper";
-
-import { useSnackbar } from "@/components/SnackBarProvider";
-import { useLocale } from "@/hooks/useLocale";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { Keyboard } from "react-native";
+import { Appbar, Button, HelperText, TextInput } from "react-native-paper";
 import { z } from "zod";
+
+import { useSnackbar } from "@/components/SnackBarProvider";
+import { View } from "@/components/Themed";
+import { useAsyncStorage as uAS } from "@/hooks/useAsyncStorage";
+import { useLocale } from "@/hooks/useLocale";
 
 export default function Settings() {
   const { t } = useLocale();
@@ -24,28 +23,11 @@ export default function Settings() {
 
   const showSnackbar = useSnackbar();
 
-  const [api_url, setApiUrl, hasApiUrlRetrieved] = useAsyncStorage(
-    "api_url",
-    ""
-  );
-  const [token, setToken, hasTokenRetrieved] = useAsyncStorage("token", "");
-  const [entity_id, setEntityId, hasEntityIdRetrieved] = useAsyncStorage(
-    "entity_id",
-    ""
-  );
-
-  const [entity_icon, setEntityIcon, hasEntityIconRetrieved] = useAsyncStorage(
-    "entity_icon",
-    "help"
-  );
-
-  const [entity_name, setEntityName, hasEntityNameRetrieved] = useAsyncStorage(
-    "entity_name",
-    ""
-  );
-
-  const [hideSecrets, setHideSecrets, hasHideSecretsRetrieved] =
-    useAsyncStorage("hide_secrets", true);
+  const [api_url, setApiUrl, hasApiUrlRetrieved] = uAS("api_url", "");
+  const [token, setToken, hasTokenRetrieved] = uAS("token", "");
+  const [entity_id, setEntityId, hasEntityIdRetrieved] = uAS("entity_id", "");
+  const [entity_icon, setEntityIcon, hasEntityIconRetrieved] = uAS("entity_icon", "help");
+  const [hideSecrets, setHideSecrets] = uAS("hide_secrets", true);
 
   const {
     control,
@@ -54,11 +36,7 @@ export default function Settings() {
     setValue,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      api_url,
-      token,
-      entity_id,
-    },
+    defaultValues: { api_url, token, entity_id },
   });
 
   useEffect(() => {
@@ -66,18 +44,9 @@ export default function Settings() {
     if (hasApiUrlRetrieved) setValue("api_url", api_url);
     if (hasTokenRetrieved) setValue("token", token);
     if (hasEntityIdRetrieved) setValue("entity_id", entity_id);
-  }, [
-    hasApiUrlRetrieved,
-    hasTokenRetrieved,
-    hasEntityIdRetrieved,
-    hasEntityIconRetrieved,
-  ]);
+  }, [hasApiUrlRetrieved, hasTokenRetrieved, hasEntityIdRetrieved, hasEntityIconRetrieved]);
 
-  const check = async ({
-    api_url,
-    token,
-    entity_id,
-  }: z.infer<typeof formSchema>) => {
+  const check = async ({ api_url, token, entity_id }: z.infer<typeof formSchema>) => {
     try {
       Keyboard.dismiss();
       const res = await fetch(`${api_url}/api/states/${entity_id}`, {
@@ -91,52 +60,29 @@ export default function Settings() {
         setToken(token);
         setEntityId(entity_id);
         setEntityIcon(body.attributes.icon.split(":")[1]);
-        setEntityName(body.attributes.friendly_name);
 
-        showSnackbar({
-          // message: `Connection successful to ${api_url}`,
-          message: t("settings.success.check_connection", { api_url }),
-          type: "success",
-        });
-      } else
-        showSnackbar({
-          message: t("settings.errors.check_connection", {
-            error: res.statusText,
-          }),
-          type: "error",
-        });
+        showSnackbar({ message: t("settings.success.check_connection", { api_url }), type: "success" });
+      } else showSnackbar({ message: t("settings.errors.check_connection", { error: res.statusText }), type: "error" });
     } catch (e) {
       console.error(e);
       showSnackbar({
-        message: t("settings.errors.check_connection", {
-          error: (e as Error).message ?? "Unknown error",
-        }),
+        message: t("settings.errors.check_connection", { error: (e as Error).message ?? "Unknown error" }),
         type: "error",
       });
     }
   };
 
   useEffect(() => {
-    if (
-      hasEntityIdRetrieved &&
-      hasTokenRetrieved &&
-      hasApiUrlRetrieved &&
-      entity_id &&
-      token &&
-      api_url
-    )
+    if (hasEntityIdRetrieved && hasTokenRetrieved && hasApiUrlRetrieved && entity_id && token && api_url)
       check({ api_url, token, entity_id });
   }, [hasApiUrlRetrieved, hasTokenRetrieved, hasEntityIdRetrieved]);
 
   return (
     <>
-      <StatusBar style={"auto"} />
+      <StatusBar style="auto" />
       <Appbar.Header>
         <Appbar.Content title={t("settings.title")} />
-        <Appbar.Action
-          icon="information-outline"
-          onPress={() => router.push("/credits")}
-        />
+        <Appbar.Action icon="information-outline" onPress={() => router.push("/credits")} />
       </Appbar.Header>
       <View
         style={{
@@ -178,12 +124,8 @@ export default function Settings() {
             )}
             name="api_url"
           />
-          <HelperText type="info">
-            (example: https://my-ha-instance.com)
-          </HelperText>
-          {errors.api_url && (
-            <HelperText type="error">{errors.api_url.message}</HelperText>
-          )}
+          <HelperText type="info">(example: https://my-ha-instance.com)</HelperText>
+          {errors.api_url && <HelperText type="error">{errors.api_url.message}</HelperText>}
         </View>
 
         <View>
@@ -224,9 +166,7 @@ export default function Settings() {
           />
 
           <HelperText type="info">{t("settings.token_helper")}</HelperText>
-          {errors.token && (
-            <HelperText type="error">{errors.token.message}</HelperText>
-          )}
+          {errors.token && <HelperText type="error">{errors.token.message}</HelperText>}
         </View>
 
         <View>
@@ -266,9 +206,7 @@ export default function Settings() {
 
           <HelperText type="info">{t("settings.entity_id_helper")}</HelperText>
 
-          {errors.entity_id && (
-            <HelperText type="error">{errors.entity_id.message}</HelperText>
-          )}
+          {errors.entity_id && <HelperText type="error">{errors.entity_id.message}</HelperText>}
         </View>
         <Button icon="check" mode="contained" onPress={handleSubmit(check)}>
           {t("settings.check_connection_button_label")}
@@ -278,9 +216,7 @@ export default function Settings() {
           mode="contained-tonal"
           onPress={() => setHideSecrets(!hideSecrets)}
         >
-          {hideSecrets
-            ? t("settings.show_secrets_button_label")
-            : t("settings.hide_secrets_button_label")}
+          {hideSecrets ? t("settings.show_secrets_button_label") : t("settings.hide_secrets_button_label")}
         </Button>
       </View>
     </>
