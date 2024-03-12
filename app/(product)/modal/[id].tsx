@@ -28,7 +28,7 @@ const formSchema = z.object({
     }, "La date doit être valide"),
 });
 
-export default function ModalScreen() {
+export default function ProductScreen() {
   const { id } = useLocalSearchParams();
   const [image, setImage] = useState<string | undefined>(undefined);
 

@@ -66,6 +66,13 @@ function RootLayoutNav() {
                 headerTitle: "Ajouter un produit",
               }}
             />
+            <Stack.Screen
+              name="credits"
+              options={{
+                presentation: "modal",
+                headerTitle: "Credits",
+              }}
+            />
           </Stack>
         </SnackbarProvider>
       </PaperProvider>

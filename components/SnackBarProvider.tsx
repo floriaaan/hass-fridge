@@ -57,14 +57,8 @@ export const SnackbarProvider: React.FC<SnackbarProviderProps> = ({
                 : undefined,
           },
         }}
-        icon={
-          type === "error"
-            ? "alert-circle"
-            : type === "success"
-            ? "check"
-            : undefined
-        }
       >
+        
         {message}
       </Snackbar>
     </SnackbarContext.Provider>

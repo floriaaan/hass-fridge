@@ -1,5 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Tabs } from "expo-router";
+import { Tabs, router } from "expo-router";
 import React from "react";
 
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
@@ -11,11 +11,11 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>["name"];
   color: string;
 }) {
-  return <FontAwesome size={24}  {...props} />;
+  return <FontAwesome size={24} {...props} />;
 }
 
-import { CommonActions } from '@react-navigation/native';
-import { BottomNavigation } from 'react-native-paper';
+import { CommonActions } from "@react-navigation/native";
+import { BottomNavigation, IconButton } from "react-native-paper";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -63,8 +63,8 @@ export default function TabLayout() {
                 ? options.tabBarLabel
                 : options.title !== undefined
                 ? options.title
-                // @ts-ignore - we know it's a string
-                : route.title;
+                : // @ts-ignore - we know it's a string
+                  route.title;
 
             return label;
           }}
@@ -93,6 +93,14 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
+          headerRight: () => (
+            <IconButton
+              icon={"information-outline"}
+              onPress={() => {
+                router.push("/credits");
+              }}
+            />
+          ),
         }}
       />
     </Tabs>
