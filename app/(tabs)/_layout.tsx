@@ -1,6 +1,6 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs, router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
@@ -15,10 +15,12 @@ function TabBarIcon(props: {
 }
 
 import { CommonActions } from "@react-navigation/native";
-import { BottomNavigation, IconButton } from "react-native-paper";
+import { BottomNavigation } from "react-native-paper";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+
+  const [counter, setCounter] = useState(0);
 
   return (
     <Tabs
@@ -86,21 +88,34 @@ export default function TabLayout() {
         options={{
           title: "Product list",
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="settings"
+        listeners={{
+          tabPress: (e) => {
+
+            setCounter((prev) => prev + 1);
+            if (counter >= 4) {
+              e.preventDefault();
+              setCounter(0);
+              router.push("/developper");
+            }
+          },
+        }}
         options={{
           title: "Settings",
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
-          headerRight: () => (
-            <IconButton
-              icon={"information-outline"}
-              onPress={() => {
-                router.push("/credits");
-              }}
-            />
-          ),
+          // headerRight: () => (
+          //   <IconButton
+          //     icon={"information-outline"}
+          //     onPress={() => {
+          //       router.push("/credits");
+          //     }}
+          //   />
+          // ),
+          headerShown: false,
         }}
       />
     </Tabs>

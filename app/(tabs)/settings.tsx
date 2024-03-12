@@ -3,10 +3,11 @@ import { Keyboard } from "react-native";
 
 import { View } from "@/components/Themed";
 import { useAsyncStorage } from "@/hooks/useAsyncStorage";
-import { Button, HelperText, TextInput } from "react-native-paper";
+import { Appbar, Button, HelperText, TextInput } from "react-native-paper";
 
 import { useSnackbar } from "@/components/SnackBarProvider";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -124,6 +125,10 @@ export default function Settings() {
   return (
     <>
       <StatusBar style={"auto"} />
+      <Appbar.Header>
+        <Appbar.Content title="Settings" />
+        <Appbar.Action icon="information-outline" onPress={() => router.push("/credits")} />
+      </Appbar.Header>
       <View
         style={{
           flex: 1,
@@ -148,14 +153,16 @@ export default function Settings() {
                 onChangeText={onChange}
                 left={<TextInput.Icon icon="web" size={20} />}
                 right={
-                  value.trim().length && <TextInput.Icon
-                    icon="delete"
-                    size={20}
-                    onPress={() => {
-                      setValue("api_url", "");
-                      setApiUrl("");
-                    }}
-                  />
+                  value.trim().length && (
+                    <TextInput.Icon
+                      icon="delete"
+                      size={20}
+                      onPress={() => {
+                        setValue("api_url", "");
+                        setApiUrl("");
+                      }}
+                    />
+                  )
                 }
                 secureTextEntry={hideSecrets}
               />
@@ -231,15 +238,17 @@ export default function Settings() {
                 onChangeText={onChange}
                 left={<TextInput.Icon icon={entity_icon} size={20} />}
                 right={
-                  value.trim().length && <TextInput.Icon
-                    icon="delete"
-                    size={20}
-                    onPress={() => {
-                      setValue("entity_id", "");
-                      setEntityId("");
-                      setEntityIcon("help");
-                    }}
-                  />
+                  value.trim().length && (
+                    <TextInput.Icon
+                      icon="delete"
+                      size={20}
+                      onPress={() => {
+                        setValue("entity_id", "");
+                        setEntityId("");
+                        setEntityIcon("help");
+                      }}
+                    />
+                  )
                 }
               />
             )}

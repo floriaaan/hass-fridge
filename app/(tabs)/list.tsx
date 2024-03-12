@@ -2,10 +2,14 @@ import { StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { StatusBar } from "expo-status-bar";
+import { Appbar } from "react-native-paper";
 
 export default function ProductList() {
   return (
     <>
+      <Appbar.Header>
+        <Appbar.Content title="Product list" />
+      </Appbar.Header>
       <StatusBar style={"auto"} />
       <View style={styles.container}>
         <Text style={styles.title}>Currently unavailable</Text>
