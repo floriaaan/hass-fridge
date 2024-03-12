@@ -8,10 +8,11 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { PaperProvider } from "react-native-paper";
+import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 
 import { SnackbarProvider } from "@/components/SnackBarProvider";
 import { useColorScheme } from "@/components/useColorScheme";
+import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,10 +53,16 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const { theme } = useMaterial3Theme();
+
+  const paperTheme =
+    colorScheme === "dark"
+      ? { ...MD3DarkTheme, colors: theme.dark }
+      : { ...MD3LightTheme, colors: theme.light };
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <PaperProvider>
+      <PaperProvider theme={paperTheme}>
         <SnackbarProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -73,9 +80,12 @@ function RootLayoutNav() {
                 headerTitle: "Credits",
               }}
             />
-            <Stack.Screen name="developper" options={{
-              headerShown: false
-            }} />
+            <Stack.Screen
+              name="developper"
+              options={{
+                headerShown: false,
+              }}
+            />
           </Stack>
         </SnackbarProvider>
       </PaperProvider>
