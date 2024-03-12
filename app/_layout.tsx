@@ -14,44 +14,36 @@ import { SnackbarProvider } from "@/components/SnackBarProvider";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary
-} from "expo-router";
+import { LocaleProvider, useLocale } from "@/hooks/useLocale";
 
-export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
-};
+export { ErrorBoundary } from "expo-router";
+
+export const unstable_settings = { initialRouteName: "(tabs)" };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    ...FontAwesome.font,
-  });
+  const [loaded, error] = useFonts({ ...FontAwesome.font });
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
+    if (loaded) SplashScreen.hideAsync();
   }, [loaded]);
 
-  if (!loaded) {
-    return null;
-  }
-
-  return <RootLayoutNav />;
+  if (!loaded) return null;
+  return (
+    <LocaleProvider>
+      <RootLayoutNav />
+    </LocaleProvider>
+  );
 }
 
 function RootLayoutNav() {
+  const { t } = useLocale();
   const colorScheme = useColorScheme();
   const { theme } = useMaterial3Theme();
 
@@ -70,7 +62,7 @@ function RootLayoutNav() {
               name="(product)/modal/[id]"
               options={{
                 presentation: "modal",
-                headerTitle: "Ajouter un produit",
+                headerTitle: t("add_item.title"),
               }}
             />
             <Stack.Screen
@@ -80,12 +72,7 @@ function RootLayoutNav() {
                 headerTitle: "Credits",
               }}
             />
-            <Stack.Screen
-              name="developper"
-              options={{
-                headerShown: false,
-              }}
-            />
+            <Stack.Screen name="developper" options={{ headerShown: false }} />
           </Stack>
         </SnackbarProvider>
       </PaperProvider>

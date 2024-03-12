@@ -1,0 +1,58 @@
+{
+  "tabs": {
+    "scanner": "Scanner",
+    "product_list": "Liste de produits",
+    "settings": "Paramètres"
+  },
+  "scanner": {
+    "requesting_permission": "Demande d'autorisation d'utiliser la caméra",
+    "no_camera_permission": "Pas d'autorisation de caméra",
+    "scan_again_button_label": "Scanner à nouveau"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "api_url_label": "URL de l'API",
+    "token_label": "Jeton",
+    "token_helper": "Jeton d'accès à long terme de votre instance Home Assistant.",
+    "entity_id_label": "ID de l'entité",
+    "entity_id_helper": "L'ID de l'entité de la liste à laquelle vous souhaitez ajouter des éléments.",
+    "check_connection_button_label": "Vérifier la connexion",
+    "hide_secrets_button_label": "Masquer les secrets",
+    "show_secrets_button_label": "Afficher les secrets",
+
+    "success": {
+      "check_connection": "Connexion réussie à %{api_url}"
+    },
+    "errors": {
+      "check_connection": "Échec de la connexion, erreur : %{error}",
+      "required": "Ce champ est requis"
+    }
+  },
+  "product_list": {
+    "title": "Liste de produits",
+    "unavailable": "Actuellement indisponible"
+  },
+  "developer": {
+    "title": "Développeur"
+  },
+  "add_item": {
+    "title":"Ajouter un produit",
+    "dismiss_keyboard_helper": "Pour fermer le clavier, appuyez sur l'image.",
+    "item_label": "Nom de l'article",
+    "description_label": "Description (facultatif)",
+    "due_date_label": "Date de péremption",
+    "save_button_label": "Enregistrer",
+    "helper": "Les données seront envoyées à Home Assistant et ajoutées à la liste %{entity_id}.",
+
+    "success": {
+      "add_item": "Article ajouté à la liste"
+    },
+    "errors": {
+      "required": "Ce champ est requis",
+      "due_date_format": "Format de date invalide, utilisez AAAA-MM-JJ",
+      "due_date_invalid": "Date invalide",
+      "helper": "Veuillez définir l'URL de l'API, le jeton et l'ID de l'entité dans l'onglet des paramètres avant d'ajouter des éléments à la liste",
+      "helper_settings_link": "Paramètres"
+    }
+  }
+}

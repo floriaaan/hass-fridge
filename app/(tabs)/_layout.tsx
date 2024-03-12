@@ -14,12 +14,13 @@ function TabBarIcon(props: {
   return <FontAwesome size={24} {...props} />;
 }
 
+import { useLocale } from "@/hooks/useLocale";
 import { CommonActions } from "@react-navigation/native";
 import { BottomNavigation } from "react-native-paper";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
+  const { t } = useLocale();
   const [counter, setCounter] = useState(0);
 
   return (
@@ -76,7 +77,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Scanner",
+          title: t("tabs.scanner"),
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="barcode" color={color} />
@@ -86,7 +87,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="list"
         options={{
-          title: "Product list",
+          title: t("tabs.product_list"),
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
           headerShown: false,
         }}
@@ -95,26 +96,17 @@ export default function TabLayout() {
         name="settings"
         listeners={{
           tabPress: (e) => {
-
             setCounter((prev) => prev + 1);
-            if (counter >= 4) {
-              e.preventDefault();
-              setCounter(0);
-              router.push("/developper");
-            }
+            if (!(counter >= 4)) return;
+            
+            e.preventDefault();
+            setCounter(0);
+            router.push("/developper");
           },
         }}
         options={{
-          title: "Settings",
+          title: t("tabs.settings"),
           tabBarIcon: ({ color }) => <TabBarIcon name="cog" color={color} />,
-          // headerRight: () => (
-          //   <IconButton
-          //     icon={"information-outline"}
-          //     onPress={() => {
-          //       router.push("/credits");
-          //     }}
-          //   />
-          // ),
           headerShown: false,
         }}
       />

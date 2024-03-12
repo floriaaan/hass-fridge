@@ -12,23 +12,13 @@ import {
 
 import { useSnackbar } from "@/components/SnackBarProvider";
 import { useAsyncStorage } from "@/hooks/useAsyncStorage";
+import { useLocale } from "@/hooks/useLocale";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const formSchema = z.object({
-  item: z.string().min(1),
-  description: z.string().min(1),
-  due_date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "La date doit être au format yyyy-mm-jj")
-    .refine((v) => {
-      const date = new Date(v);
-      return date instanceof Date && !isNaN(date.getTime());
-    }, "La date doit être valide"),
-});
-
-export default function ProductScreen() {
+export default function AddItemScreen() {
+  const { t } = useLocale();
   const { id } = useLocalSearchParams();
   const [image, setImage] = useState<string | undefined>(undefined);
 
@@ -39,6 +29,18 @@ export default function ProductScreen() {
   const [token, , hasTokenRetrieved] = useAsyncStorage("token", "");
   const [entity_id, , hasEntityIdRetrieved] = useAsyncStorage("entity_id", "");
   const [entity_name, , hasENRetrieved] = useAsyncStorage("entity_name", "");
+
+  const formSchema = z.object({
+    item: z.string().min(1, t("add_item.errors.required")),
+    description: z.string(),
+    due_date: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, t("add_item.errors.due_date_format"))
+      .refine((v) => {
+        const date = new Date(v);
+        return date instanceof Date && !isNaN(date.getTime());
+      }, t("add_item.errors.due_date_invalid")),
+  });
 
   const {
     control,
@@ -67,10 +69,13 @@ export default function ProductScreen() {
       const now = new Date().toISOString().split("T")[0];
       const isDueDatePast = new Date(values.due_date) < new Date(now);
 
+      // TODO: feedback on the UI
+      if (!hasEntityIdRetrieved || !entity_id) return;
+
       const res = await fetch(`${api_url}/api/services/todo/add_item`, {
         method: "POST",
         body: JSON.stringify({
-          entity_id: "todo.refrigerateur",
+          entity_id,
           ...values,
           due_date: isDueDatePast ? now : values.due_date,
         }),
@@ -81,13 +86,17 @@ export default function ProductScreen() {
       });
 
       if (res.ok)
-        showSnackbar({ message: "Produit ajouté à la liste", type: "success" });
+        // TODO: i18n
+        showSnackbar({
+          message: t("add_item.success.add_item"),
+          type: "success",
+        });
 
       if (isDueDatePast)
         await fetch(`${api_url}/api/services/todo/update_item`, {
           method: "POST",
           body: JSON.stringify({
-            entity_id: "todo.refrigerateur",
+            entity_id,
             item: values.item,
             due_date: values.due_date,
           }),
@@ -143,7 +152,7 @@ export default function ProductScreen() {
             marginBottom: -16,
           }}
         >
-          Pour faire disparaître le clavier, appuyez sur l'image.
+          {t("add_item.dismiss_keyboard_helper")}
         </HelperText>
         <View style={{ flex: 1, gap: 16 }}>
           <TouchableRipple
@@ -176,7 +185,7 @@ export default function ProductScreen() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  label={"Nom du produit"}
+                  label={t("add_item.item_label")}
                   left={<TextInput.Icon icon="food" size={20} />}
                 />
               )}
@@ -195,7 +204,7 @@ export default function ProductScreen() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  label={"Description (optionnel)"}
+                  label={t("add_item.description_label")}
                   left={<TextInput.Icon icon="text" size={20} />}
                 />
               )}
@@ -212,7 +221,7 @@ export default function ProductScreen() {
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
                   mode="outlined"
-                  label="Date de péremption"
+                  label={t("add_item.due_date_label")}
                   value={value}
                   keyboardType="numeric"
                   left={<TextInput.Icon icon="calendar" size={20} />}
@@ -258,11 +267,13 @@ export default function ProductScreen() {
           {hasErrorsWithParams ? (
             <View style={{ alignItems: "center", justifyContent: "center" }}>
               <HelperText type="error" style={{ textAlign: "center" }}>
-                Veuillez configurer l'URL de l'API, le token et l'identifiant de
-                l'entité "Liste" dans les paramètres
+                {/* TODO: i18n */}
+                {t("add_item.errors.helper")}
               </HelperText>
               <Link href="/settings">
-                <Button icon="cog-outline">Paramètres</Button>
+                <Button icon="cog-outline">
+                  {t("add_item.errors.helper_settings_link")}
+                </Button>
               </Link>
             </View>
           ) : null}
@@ -271,22 +282,16 @@ export default function ProductScreen() {
             loading={isSubmitting}
             disabled={hasErrorsWithParams || isSubmitting}
             mode={
-              hasErrorsWithParams || isSubmitting
-                ? "outlined"
-                : "contained"
+              hasErrorsWithParams || isSubmitting ? "outlined" : "contained"
             }
             onPress={handleSubmit(onSubmit)}
           >
-            Enregistrer
+            {t("add_item.save_button_label")}
           </Button>
-          <HelperText
-            type="info"
-            style={{
-              textAlign: "center",
-            }}
-          >
-            Les données seront enregistrées dans votre Home Assistant, dans
-            l'entité {entity_name || entity_id || "non configurée"}
+          <HelperText type="info" style={{ textAlign: "center" }}>
+            {t("add_item.helper", {
+              entity_id: entity_name || entity_id || "non configurée",
+            })}
           </HelperText>
         </View>
       </View>

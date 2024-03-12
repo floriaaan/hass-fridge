@@ -1,0 +1,58 @@
+{
+  "tabs": {
+    "scanner": "Scanner",
+    "product_list": "Product list",
+    "settings": "Settings"
+  },
+  "scanner": {
+    "requesting_permission": "Requesting permission to use the camera",
+    "no_camera_permission": "No camera permission",
+    "scan_again_button_label": "Scan again"
+  },
+  "settings": {
+    "title": "Settings",
+    "api_url_label": "API url",
+    "token_label": "Token",
+    "token_helper": "Long lived access token from your Home Assistant instance.",
+    "entity_id_label": "Entity id",
+    "entity_id_helper": "The entity id of the list you want to add items to.",
+    "check_connection_button_label": "Check connection",
+    "hide_secrets_button_label": "Hide secrets",
+    "show_secrets_button_label": "Show secrets",
+
+    "success": {
+      "check_connection": "Connection successful to %{api_url}"
+    },
+    "errors": {
+      "check_connection": "Connection failed, error: %{error}",
+      "required": "This field is required"
+    }
+  },
+  "product_list": {
+    "title": "Product list",
+    "unavailable": "Currently unavailable"
+  },
+  "developer": {
+    "title": "Developer"
+  },
+  "add_item": {
+    "title": "Add an item",
+    "dismiss_keyboard_helper": "To dismiss the keyboard, tap on the image.",
+    "item_label": "Item name",
+    "description_label": "Description (optional)",
+    "due_date_label": "Due date",
+    "save_button_label": "Save",
+    "helper": "The data will be sent to Home Assistant and added to the %{entity_id} list.",
+
+    "success": {
+      "add_item": "Item added to the list"
+    },
+    "errors": {
+      "required": "This field is required",
+      "due_date_format": "Invalid date format, use YYYY-MM-DD",
+      "due_date_invalid": "Invalid date",
+      "helper": "Please set API url, token and entity id in the settings tab before adding items to the list",
+      "helper_settings_link": "Settings"
+    }
+  }
+}

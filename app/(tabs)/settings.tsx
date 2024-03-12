@@ -6,19 +6,22 @@ import { useAsyncStorage } from "@/hooks/useAsyncStorage";
 import { Appbar, Button, HelperText, TextInput } from "react-native-paper";
 
 import { useSnackbar } from "@/components/SnackBarProvider";
+import { useLocale } from "@/hooks/useLocale";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const formSchema = z.object({
-  api_url: z.string().min(1),
-  token: z.string().min(1),
-  entity_id: z.string().min(1),
-});
-
 export default function Settings() {
+  const { t } = useLocale();
+
+  const formSchema = z.object({
+    api_url: z.string().min(1, t("settings.errors.required")),
+    token: z.string().min(1, t("settings.errors.required")),
+    entity_id: z.string().min(1, t("settings.errors.required")),
+  });
+
   const showSnackbar = useSnackbar();
 
   const [api_url, setApiUrl, hasApiUrlRetrieved] = useAsyncStorage(
@@ -91,20 +94,23 @@ export default function Settings() {
         setEntityName(body.attributes.friendly_name);
 
         showSnackbar({
-          message: `Connection successful to ${api_url}`,
+          // message: `Connection successful to ${api_url}`,
+          message: t("settings.success.check_connection", { api_url }),
           type: "success",
         });
       } else
         showSnackbar({
-          message: `Connection failed, status: ${res.status}`,
+          message: t("settings.errors.check_connection", {
+            error: res.statusText,
+          }),
           type: "error",
         });
     } catch (e) {
       console.error(e);
       showSnackbar({
-        message: `Connection failed, error: ${
-          (e as Error).message ?? "Unknown error"
-        }`,
+        message: t("settings.errors.check_connection", {
+          error: (e as Error).message ?? "Unknown error",
+        }),
         type: "error",
       });
     }
@@ -126,8 +132,11 @@ export default function Settings() {
     <>
       <StatusBar style={"auto"} />
       <Appbar.Header>
-        <Appbar.Content title="Settings" />
-        <Appbar.Action icon="information-outline" onPress={() => router.push("/credits")} />
+        <Appbar.Content title={t("settings.title")} />
+        <Appbar.Action
+          icon="information-outline"
+          onPress={() => router.push("/credits")}
+        />
       </Appbar.Header>
       <View
         style={{
@@ -145,7 +154,7 @@ export default function Settings() {
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 mode="outlined"
-                label={"API url"}
+                label={t("settings.api_url_label")}
                 value={value}
                 keyboardType="url"
                 autoComplete="url"
@@ -169,7 +178,9 @@ export default function Settings() {
             )}
             name="api_url"
           />
-          <HelperText type="info">(e.g. https://my-ha-instance.com)</HelperText>
+          <HelperText type="info">
+            (example: https://my-ha-instance.com)
+          </HelperText>
           {errors.api_url && (
             <HelperText type="error">{errors.api_url.message}</HelperText>
           )}
@@ -184,7 +195,7 @@ export default function Settings() {
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 mode="outlined"
-                label={"Token"}
+                label={t("settings.token_label")}
                 style={{
                   height: 52,
                 }}
@@ -212,9 +223,7 @@ export default function Settings() {
             name="token"
           />
 
-          <HelperText type="info">
-            Long lived access token from your Home Assistant instance.
-          </HelperText>
+          <HelperText type="info">{t("settings.token_helper")}</HelperText>
           {errors.token && (
             <HelperText type="error">{errors.token.message}</HelperText>
           )}
@@ -229,7 +238,7 @@ export default function Settings() {
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 mode="outlined"
-                label={"Entity id"}
+                label={t("settings.entity_id_label")}
                 value={value}
                 autoComplete="off"
                 // remove auto uppercase
@@ -255,23 +264,23 @@ export default function Settings() {
             name="entity_id"
           />
 
-          <HelperText type="info">
-            The entity id of the list you want to add items to.
-          </HelperText>
+          <HelperText type="info">{t("settings.entity_id_helper")}</HelperText>
 
           {errors.entity_id && (
             <HelperText type="error">{errors.entity_id.message}</HelperText>
           )}
         </View>
         <Button icon="check" mode="contained" onPress={handleSubmit(check)}>
-          Check connection
+          {t("settings.check_connection_button_label")}
         </Button>
         <Button
           icon={hideSecrets ? "eye-off" : "eye"}
           mode="contained-tonal"
           onPress={() => setHideSecrets(!hideSecrets)}
         >
-          {hideSecrets ? "Show secrets" : "Hide secrets"}
+          {hideSecrets
+            ? t("settings.show_secrets_button_label")
+            : t("settings.hide_secrets_button_label")}
         </Button>
       </View>
     </>
