@@ -23,8 +23,6 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors[colorScheme ?? "light"].colors.primary,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
       }}
       tabBar={({ navigation, state, descriptors, insets }) => (
@@ -62,7 +60,7 @@ export default function TabLayout() {
                 ? options.tabBarLabel
                 : options.title !== undefined
                   ? options.title
-                  : // @ts-ignore - we know it's a string
+                  : // @ts-expect-error - we know it's a string
                     route.title;
 
             return label;
