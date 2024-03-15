@@ -38,7 +38,10 @@
     "unavailable": "Currently unavailable"
   },
   "developer": {
-    "title": "Developer"
+    "title": "Developer",
+    "change_language_select_label": "Change language",
+    "change_language_success": "Language changed to {{locale}}",
+    "change_language_error": "Error changing language to {{locale}}: {{error}}"
   },
   "add_item": {
     "title": "Add an item",

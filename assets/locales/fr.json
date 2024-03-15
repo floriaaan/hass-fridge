@@ -38,7 +38,10 @@
     "unavailable": "Actuellement indisponible"
   },
   "developer": {
-    "title": "Développeur"
+    "title": "Développeur",
+    "change_language_select_label": "Changer de langue",
+    "change_language_success": "Langue changée avec succès en {{locale}}",
+    "change_language_error": "Erreur lors du changement de langue en {{locale}}: {{error}}"
   },
   "add_item": {
     "title": "Ajouter un produit",

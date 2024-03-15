@@ -95,7 +95,7 @@ export default function TabLayout() {
 
             e.preventDefault();
             setCounter(0);
-            router.push("/developper");
+            router.push("/developer");
           },
         }}
         options={{

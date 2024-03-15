@@ -59,7 +59,7 @@ function RootLayoutNav() {
                 headerTitle: "Credits",
               }}
             />
-            <Stack.Screen name="developper" options={{ headerShown: false }} />
+            <Stack.Screen name="developer" options={{ headerShown: false }} />
           </Stack>
         </SnackbarProvider>
       </PaperProvider>

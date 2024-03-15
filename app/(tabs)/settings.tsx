@@ -240,7 +240,7 @@ export default function Settings() {
                 onChangeText={onChange}
                 autoComplete="off"
                 autoCapitalize="none"
-                left={<TextInput.Icon icon="key" size={20} />}
+                left={<TextInput.Icon icon="key" size={20} style={{ marginTop: 16 }} />}
                 right={
                   value.trim().length && (
                     <TextInput.Icon
