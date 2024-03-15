@@ -1,12 +1,12 @@
 import { StatusBar } from "expo-status-bar";
+import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native";
 import { Appbar } from "react-native-paper";
 
 import { Text, View } from "@/components/Themed";
-import { useLocale } from "@/hooks/useLocale";
 
 export default function ProductList() {
-  const { t } = useLocale();
+  const { t } = useTranslation();
   return (
     <>
       <Appbar.Header>

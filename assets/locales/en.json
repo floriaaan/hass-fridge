@@ -11,7 +11,7 @@
   },
   "settings": {
     "title": "Settings",
-    "api_url_label": "API url",
+    "api_url_label": "Home Assistant instance URL",
     "token_label": "Token",
     "token_helper": "Long lived access token from your Home Assistant instance.",
     "entity_id_label": "Entity id",
@@ -20,11 +20,16 @@
     "hide_secrets_button_label": "Hide secrets",
     "show_secrets_button_label": "Show secrets",
 
+    "saved_configs": "Saved configurations",
+    "no_saved_configs": "No saved configurations",
+
     "success": {
-      "check_connection": "Connection successful to %{api_url}"
+      "check_connection": "Connection successful to {{api_url}}",
+      "selected_config": "Selected configuration: {{entity_name}}",
+      "removed_config": "Removed configuration: {{entity_name}}"
     },
     "errors": {
-      "check_connection": "Connection failed, error: %{error}",
+      "check_connection": "Connection failed, error: {{error}}",
       "required": "This field is required"
     }
   },
@@ -42,7 +47,7 @@
     "description_label": "Description (optional)",
     "due_date_label": "Due date",
     "save_button_label": "Save",
-    "helper": "The data will be sent to Home Assistant and added to the %{entity_id} list.",
+    "helper": "The data will be sent to Home Assistant and added to the {{entity_id}} list.",
 
     "success": {
       "add_item": "Item added to the list"

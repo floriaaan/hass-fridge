@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { Image, Keyboard } from "react-native";
 import { Button, HelperText, TextInput, TouchableRipple } from "react-native-paper";
 import { z } from "zod";
@@ -9,10 +10,9 @@ import { z } from "zod";
 import { useSnackbar } from "@/components/SnackBarProvider";
 import { View } from "@/components/Themed";
 import { useAsyncStorage } from "@/hooks/useAsyncStorage";
-import { useLocale } from "@/hooks/useLocale";
 
 export default function AddItemScreen() {
-  const { t } = useLocale();
+  const { t } = useTranslation();
   const { id } = useLocalSearchParams();
   const [image, setImage] = useState<string | undefined>(undefined);
 

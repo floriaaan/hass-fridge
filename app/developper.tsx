@@ -1,11 +1,11 @@
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 import { Appbar } from "react-native-paper";
 
 import { View } from "@/components/Themed";
-import { useLocale } from "@/hooks/useLocale";
 
 export default function DevelopperScreen() {
-  const { t } = useLocale();
+  const { t } = useTranslation();
   return (
     <>
       <Appbar.Header>

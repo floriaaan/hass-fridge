@@ -1,15 +1,17 @@
+import "../libs/locale";
+
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { Theme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
+import { useTranslation } from "react-i18next";
+import { useColorScheme } from "react-native";
+import { PaperProvider } from "react-native-paper";
 
 import { SnackbarProvider } from "@/components/SnackBarProvider";
-import { useColorScheme } from "@/components/useColorScheme";
-import { LocaleProvider, useLocale } from "@/hooks/useLocale";
+import { colors } from "@/constants/colors";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -30,24 +32,16 @@ export default function RootLayout() {
   }, [loaded]);
 
   if (!loaded) return null;
-  return (
-    <LocaleProvider>
-      <RootLayoutNav />
-    </LocaleProvider>
-  );
+  return <RootLayoutNav />;
 }
 
 function RootLayoutNav() {
-  const { t } = useLocale();
+  const { t } = useTranslation();
   const colorScheme = useColorScheme();
-  const { theme } = useMaterial3Theme();
-
-  const paperTheme =
-    colorScheme === "dark" ? { ...MD3DarkTheme, colors: theme.dark } : { ...MD3LightTheme, colors: theme.light };
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <PaperProvider theme={paperTheme}>
+    <ThemeProvider value={colors[colorScheme || "light"] as unknown as Theme}>
+      <PaperProvider theme={colors[colorScheme || "light"]}>
         <SnackbarProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

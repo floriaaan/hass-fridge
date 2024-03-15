@@ -11,7 +11,7 @@
   },
   "settings": {
     "title": "Paramètres",
-    "api_url_label": "URL de l'API",
+    "api_url_label": "URL de l'instance Home Assistant",
     "token_label": "Jeton",
     "token_helper": "Jeton d'accès à long terme de votre instance Home Assistant.",
     "entity_id_label": "ID de l'entité",
@@ -20,11 +20,16 @@
     "hide_secrets_button_label": "Masquer les secrets",
     "show_secrets_button_label": "Afficher les secrets",
 
+    "saved_configs": "Configurations enregistrées",
+    "no_saved_configs": "Aucune configuration enregistrée",
+
     "success": {
-      "check_connection": "Connexion réussie à %{api_url}"
+      "check_connection": "Connexion réussie à {{api_url}}",
+      "selected_config": "Configuration sélectionnée: {{entity_name}}",
+      "removed_config": "Configuration supprimée: {{entity_name}}"
     },
     "errors": {
-      "check_connection": "Échec de la connexion, erreur : %{error}",
+      "check_connection": "Échec de la connexion, erreur : {{error}}",
       "required": "Ce champ est requis"
     }
   },

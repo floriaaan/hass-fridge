@@ -2,13 +2,12 @@ import { useIsFocused } from "@react-navigation/native";
 import { BarcodeScanningResult, Camera, CameraView } from "expo-camera/next";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Platform, Text, View } from "react-native";
 import { AnimatedFAB } from "react-native-paper";
 
-import { useLocale } from "@/hooks/useLocale";
-
 export default function Scanner() {
-  const { t } = useLocale();
+  const { t } = useTranslation();
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const isFocused = useIsFocused();

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fridge-hass",
-    "slug": "fridge-hass",
+    "name": "hass-fridge",
+    "slug": "hass-fridge",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

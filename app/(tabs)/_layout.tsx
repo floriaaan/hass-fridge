@@ -2,12 +2,12 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { CommonActions } from "@react-navigation/native";
 import { Tabs, router } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useColorScheme } from "react-native";
 import { BottomNavigation } from "react-native-paper";
 
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { useColorScheme } from "@/components/useColorScheme";
-import Colors from "@/constants/Colors";
-import { useLocale } from "@/hooks/useLocale";
+import { colors } from "@/constants/colors";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["name"]; color: string }) {
@@ -16,13 +16,13 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["nam
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { t } = useLocale();
+  const { t } = useTranslation();
   const [counter, setCounter] = useState(0);
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: colors[colorScheme ?? "light"].colors.primary,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
