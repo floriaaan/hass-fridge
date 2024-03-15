@@ -1,9 +1,9 @@
 # Fridge (for Home Assistant)
 
 <p float="left">
-  <img  src="./doc/img/scanner.png"  width="33%" />
-  <img src="./doc/img/add_item.png" width="33%" /> 
-  <img src="./doc/img/settings.png" width="33%" />
+  <img  src="./doc/img/scanner.png"  width="32%" />
+  <img src="./doc/img/add_item.png" width="32%" /> 
+  <img src="./doc/img/settings.png" width="32%" />
 </p>
 
 This project is a cross-platform mobile application for Home Assistant. It allows users to scan barcodes of items in their fridge and keep track of their inventory and their due date. The application is built using React Native and Expo.
