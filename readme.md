@@ -1,5 +1,12 @@
 # Fridge (for Home Assistant)
 
+![GitHub](https://img.shields.io/github/license/floriaaan/hass-fridge)
+[![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/floriaaan/hass-fridge)](https://github.com/floriaaan/hass-fridge)
+[![Last Commit](https://img.shields.io/github/last-commit/floriaaan/hass-fridge)](https://github.com/floriaaan/hass-fridge/commits/main)
+[![GitHub issues](https://img.shields.io/github/issues/floriaaan/hass-fridge)](https://github.com/floriaaan/hass-fridge/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/floriaaan/hass-fridge)](https://github.com/floriaaan/hass-fridge/pulls)
+
+
 <p float="left">
   <img  src="./doc/img/scanner.png"  width="32%" />
   <img src="./doc/img/add_item.png" width="32%" /> 
