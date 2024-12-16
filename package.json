@@ -23,7 +23,7 @@
     "@react-navigation/native": "^6.0.2",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
-    "expo": "~50.0.11",
+    "expo": "~52.0.18",
     "expo-barcode-scanner": "~12.9.3",
     "expo-camera": "~14.0.6",
     "expo-font": "~11.10.3",
