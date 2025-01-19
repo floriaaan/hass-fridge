@@ -15,6 +15,7 @@ import { colors } from "@/constants/colors";
 
 export { ErrorBoundary } from "expo-router";
 
+import { NavigationContainer } from "@react-navigation/native";
 export const unstable_settings = { initialRouteName: "(tabs)" };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -32,7 +33,11 @@ export default function RootLayout() {
   }, [loaded]);
 
   if (!loaded) return null;
-  return <RootLayoutNav />;
+  return (
+    <NavigationContainer>
+      <RootLayoutNav />
+    </NavigationContainer>
+  );
 }
 
 function RootLayoutNav() {

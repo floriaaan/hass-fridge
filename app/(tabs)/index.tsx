@@ -1,5 +1,5 @@
 import { useIsFocused } from "@react-navigation/native";
-import { BarcodeScanningResult, Camera, CameraView } from "expo-camera/next";
+import { BarcodeScanningResult, Camera, CameraView } from "expo-camera";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
