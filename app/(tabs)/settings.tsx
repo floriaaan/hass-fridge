@@ -4,7 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { t } from "i18next";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { FlatList, Keyboard } from "react-native";
+import { FlatList, Keyboard, KeyboardAvoidingView, ScrollView } from "react-native";
 import { Appbar, Button, Chip, HelperText, TextInput } from "react-native-paper";
 import { z } from "zod";
 
@@ -18,12 +18,16 @@ type Config = {
   entity_id: string;
   entity_icon: string;
   entity_name: string;
+
+  openai_key?: string;
 };
 
 const formSchema = z.object({
   api_url: z.string().min(1, t("settings.errors.required")),
   token: z.string().min(1, t("settings.errors.required")),
   entity_id: z.string().min(1, t("settings.errors.required")),
+
+  openai_key: z.string().optional(),
 });
 export default function Settings() {
   const showSnackbar = useSnackbar();
@@ -32,6 +36,8 @@ export default function Settings() {
   const [token, setToken, hasTokenRetrieved] = uAS("token", "");
   const [entity_id, setEntityId, hasEntityIdRetrieved] = uAS("entity_id", "");
   const [entity_icon, setEntityIcon, hasEntityIconRetrieved] = uAS("entity_icon", "help");
+  const [openai_key, setOpenAIKey, hasOpenAIKeyRetrieved] = uAS("openai_key", "");
+
   const [hideSecrets, setHideSecrets] = uAS("hide_secrets", true);
 
   const [configs, setConfigs] = uAS<Config[] | undefined>("configs", undefined);
@@ -43,7 +49,7 @@ export default function Settings() {
     setValue,
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { api_url: "", token: "", entity_id: "" },
+    defaultValues: { api_url: "", token: "", entity_id: "", openai_key: "" },
   });
 
   useEffect(() => {
@@ -51,7 +57,8 @@ export default function Settings() {
     if (hasApiUrlRetrieved) setValue("api_url", api_url);
     if (hasTokenRetrieved) setValue("token", token);
     if (hasEntityIdRetrieved) setValue("entity_id", entity_id);
-  }, [hasApiUrlRetrieved, hasTokenRetrieved, hasEntityIdRetrieved, hasEntityIconRetrieved]);
+    if (hasOpenAIKeyRetrieved) setValue("openai_key", openai_key);
+  }, [hasApiUrlRetrieved, hasTokenRetrieved, hasEntityIdRetrieved, hasEntityIconRetrieved, hasOpenAIKeyRetrieved]);
 
   const check = useCallback(
     async ({ api_url, token, entity_id }: z.infer<typeof formSchema>) => {
@@ -167,152 +174,208 @@ export default function Settings() {
         <Appbar.Content title={t("settings.title")} />
         <Appbar.Action icon="information-outline" onPress={() => router.push("/credits")} />
       </Appbar.Header>
-      <View
-        style={{
-          flex: 1,
-          padding: 16,
-          gap: 12,
-        }}
-      >
-        <View style={{ gap: 8 }}>
-          <Text>{t("settings.saved_configs")}</Text>
-          <FlatList
-            horizontal
-            style={{ flexGrow: 0, marginBottom: 16 }}
-            data={renderedConfigs}
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => item}
-            ListEmptyComponent={<HelperText type="info">{t("settings.no_saved_configs")}</HelperText>}
-          />
-        </View>
-        <View>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                label={t("settings.api_url_label")}
-                value={value}
-                keyboardType="url"
-                autoComplete="url"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                left={<TextInput.Icon icon="web" size={20} />}
-                right={
-                  value.trim().length && (
-                    <TextInput.Icon
-                      icon="delete"
-                      size={20}
-                      onPress={() => {
-                        setValue("api_url", "");
-                        setApiUrl("");
-                      }}
-                    />
-                  )
-                }
-                secureTextEntry={hideSecrets}
-              />
-            )}
-            name="api_url"
-          />
-          <HelperText type="info">(example: https://my-ha-instance.com)</HelperText>
-          {errors.api_url && <HelperText type="error">{errors.api_url.message}</HelperText>}
-        </View>
-
-        <View>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                label={t("settings.token_label")}
-                style={{
-                  height: 52,
-                }}
-                value={value}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                autoComplete="off"
-                autoCapitalize="none"
-                left={<TextInput.Icon icon="key" size={20} style={{ marginTop: 16 }} />}
-                right={
-                  value.trim().length && (
-                    <TextInput.Icon
-                      icon="delete"
-                      size={20}
-                      onPress={() => {
-                        setValue("token", "");
-                        setToken("");
-                      }}
-                    />
-                  )
-                }
-                secureTextEntry={hideSecrets}
-              />
-            )}
-            name="token"
-          />
-
-          <HelperText type="info">{t("settings.token_helper")}</HelperText>
-          {errors.token && <HelperText type="error">{errors.token.message}</HelperText>}
-        </View>
-
-        <View>
-          <Controller
-            control={control}
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                mode="outlined"
-                label={t("settings.entity_id_label")}
-                value={value}
-                autoComplete="off"
-                // remove auto uppercase
-                autoCapitalize="none"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                left={<TextInput.Icon icon={entity_icon} size={20} />}
-                right={
-                  value.trim().length && (
-                    <TextInput.Icon
-                      icon="delete"
-                      size={20}
-                      onPress={() => {
-                        setValue("entity_id", "");
-                        setEntityId("");
-                        setEntityIcon("help");
-                      }}
-                    />
-                  )
-                }
-              />
-            )}
-            name="entity_id"
-          />
-
-          <HelperText type="info">{t("settings.entity_id_helper")}</HelperText>
-
-          {errors.entity_id && <HelperText type="error">{errors.entity_id.message}</HelperText>}
-        </View>
-        <Button icon="check" mode="contained" onPress={handleSubmit(check)}>
-          {t("settings.check_connection_button_label")}
-        </Button>
-        <Button
-          icon={hideSecrets ? "eye-off" : "eye"}
-          mode="contained-tonal"
-          onPress={() => setHideSecrets(!hideSecrets)}
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+        <View
+          style={{
+            flex: 1,
+            padding: 16,
+          }}
         >
-          {hideSecrets ? t("settings.show_secrets_button_label") : t("settings.hide_secrets_button_label")}
-        </Button>
-      </View>
+          <ScrollView style={{ flex: 1, gap: 16 }}>
+            <View style={{ marginBottom: 8, gap: 8 }}>
+              <Text>{t("settings.saved_configs")}</Text>
+              <FlatList
+                horizontal
+                style={{ flexGrow: 0, marginBottom: 16 }}
+                data={renderedConfigs}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => item}
+                ListEmptyComponent={<HelperText type="info">{t("settings.no_saved_configs")}</HelperText>}
+              />
+            </View>
+            <View style={{ marginBottom: 8 }}>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    mode="outlined"
+                    label={t("settings.api_url_label")}
+                    value={value}
+                    keyboardType="url"
+                    autoComplete="url"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    left={<TextInput.Icon icon="web" size={20} />}
+                    right={
+                      value.trim().length && (
+                        <TextInput.Icon
+                          icon="delete"
+                          size={20}
+                          onPress={() => {
+                            setValue("api_url", "");
+                            setApiUrl("");
+                          }}
+                        />
+                      )
+                    }
+                    secureTextEntry={hideSecrets}
+                  />
+                )}
+                name="api_url"
+              />
+              <HelperText type="info">(example: https://my-ha-instance.com)</HelperText>
+              {errors.api_url && <HelperText type="error">{errors.api_url.message}</HelperText>}
+            </View>
+
+            <View style={{ marginBottom: 8 }}>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    mode="outlined"
+                    label={t("settings.token_label")}
+                    style={{
+                      height: 52,
+                    }}
+                    value={value}
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    left={<TextInput.Icon icon="key" size={20} style={{ marginTop: 16 }} />}
+                    right={
+                      value.trim().length && (
+                        <TextInput.Icon
+                          icon="delete"
+                          size={20}
+                          onPress={() => {
+                            setValue("token", "");
+                            setToken("");
+                          }}
+                        />
+                      )
+                    }
+                    secureTextEntry={hideSecrets}
+                  />
+                )}
+                name="token"
+              />
+
+              <HelperText type="info">{t("settings.token_helper")}</HelperText>
+              {errors.token && <HelperText type="error">{errors.token.message}</HelperText>}
+            </View>
+
+            <View style={{ marginBottom: 8 }}>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    mode="outlined"
+                    label={t("settings.entity_id_label")}
+                    value={value}
+                    autoComplete="off"
+                    // remove auto uppercase
+                    autoCapitalize="none"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    left={<TextInput.Icon icon={entity_icon} size={20} />}
+                    right={
+                      value.trim().length && (
+                        <TextInput.Icon
+                          icon="delete"
+                          size={20}
+                          onPress={() => {
+                            setValue("entity_id", "");
+                            setEntityId("");
+                            setEntityIcon("help");
+                          }}
+                        />
+                      )
+                    }
+                  />
+                )}
+                name="entity_id"
+              />
+
+              <HelperText type="info">{t("settings.entity_id_helper")}</HelperText>
+
+              {errors.entity_id && <HelperText type="error">{errors.entity_id.message}</HelperText>}
+            </View>
+            <Button icon="check" mode="contained" style={{ marginBottom: 8 }} onPress={handleSubmit(check)}>
+              {t("settings.check_connection_button_label")}
+            </Button>
+            <View
+              style={{
+                marginBottom: 8,
+                width: "100%",
+                height: 1,
+                borderBottomWidth: 1,
+                borderBottomColor: "rgba(0, 0, 0, 0.12)", // TODO: theme.colors.text
+              }}
+            ></View>
+            <View style={{ marginBottom: 8 }}>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    mode="outlined"
+                    label={t("settings.openai_key_label")}
+                    style={{
+                      height: 52,
+                    }}
+                    value={value}
+                    onBlur={onBlur}
+                    onChangeText={(text) => {
+                      onChange(text);
+                      setOpenAIKey(text);
+                    }}
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    left={<TextInput.Icon icon="key" size={20} style={{ marginTop: 16 }} />}
+                    right={
+                      value?.trim().length && (
+                        <TextInput.Icon
+                          icon="delete"
+                          size={20}
+                          onPress={() => {
+                            setValue("openai_key", "");
+                            setOpenAIKey("");
+                          }}
+                        />
+                      )
+                    }
+                    secureTextEntry={hideSecrets}
+                  />
+                )}
+                name="openai_key"
+              />
+
+              <HelperText type="info">{t("settings.token_helper")}</HelperText>
+              {errors.token && <HelperText type="error">{errors.token.message}</HelperText>}
+            </View>
+            <Button
+              style={{ marginBottom: 8 }}
+              icon={hideSecrets ? "eye-off" : "eye"}
+              mode="contained-tonal"
+              onPress={() => setHideSecrets(!hideSecrets)}
+            >
+              {hideSecrets ? t("settings.show_secrets_button_label") : t("settings.hide_secrets_button_label")}
+            </Button>
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
     </>
   );
 }

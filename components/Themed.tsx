@@ -27,14 +27,14 @@ export function useThemeColor(
 }
 
 export function Text(props: TextProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
+  const { style, lightColor, darkColor = "#ffffff", ...otherProps } = props;
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "colors");
 
   return <DefaultText style={[{ color: color as ColorValue }, style]} {...otherProps} />;
 }
 
 export function View(props: ViewProps) {
-  const { style, lightColor, darkColor, ...otherProps } = props;
+  const { style, lightColor, darkColor = "#111111", ...otherProps } = props;
   const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, "colors").toString();
 
   return <DefaultView style={[{ backgroundColor }, style]} {...otherProps} />;

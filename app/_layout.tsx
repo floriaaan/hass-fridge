@@ -8,7 +8,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
-import { PaperProvider } from "react-native-paper";
+import { IconButton, PaperProvider } from "react-native-paper";
 
 import { SnackbarProvider } from "@/components/SnackBarProvider";
 import { colors } from "@/constants/colors";
@@ -51,10 +51,24 @@ function RootLayoutNav() {
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
-              name="(product)/modal/[id]"
+              name="modal/(product)/[id]"
               options={{
                 presentation: "modal",
                 headerTitle: t("add_item.title"),
+              }}
+            />
+            <Stack.Screen
+              name="modal/recipe-generator"
+              options={{
+                headerStyle: {
+                  backgroundColor: colors[colorScheme || "light"].colors.surface,
+                },
+                headerTitleStyle: {
+                  color: colors[colorScheme || "light"].colors.onSurface,
+                },
+                presentation: "modal",
+                headerTitle: t("recipe_generator.title"),
+                headerRight: () => <IconButton icon="cog"></IconButton>,
               }}
             />
             <Stack.Screen
