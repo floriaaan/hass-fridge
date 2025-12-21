@@ -1,3 +1,5 @@
+import { DefaultTheme } from "@react-navigation/native";
+
 export const FRIDGE_LIGHT = {
   colors: {
     primary: "rgb(0, 102, 134)",
@@ -41,6 +43,7 @@ export const FRIDGE_LIGHT = {
     onSurfaceDisabled: "rgba(25, 28, 30, 0.38)",
     backdrop: "rgba(42, 49, 54, 0.4)",
   },
+  fonts: DefaultTheme.fonts,
 };
 
 export const FRIDGE_DARK = {
@@ -86,9 +89,7 @@ export const FRIDGE_DARK = {
     onSurfaceDisabled: "rgba(225, 226, 229, 0.38)",
     backdrop: "rgba(42, 49, 54, 0.4)",
   },
+  fonts: DefaultTheme.fonts,
 };
 
-export const colors = {
-  light: FRIDGE_LIGHT,
-  dark: FRIDGE_DARK,
-};
+export const colors = { light: FRIDGE_LIGHT, dark: FRIDGE_DARK };

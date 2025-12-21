@@ -8,14 +8,15 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useColorScheme } from "react-native";
-import { IconButton, PaperProvider } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 
 import { SnackbarProvider } from "@/components/SnackBarProvider";
-import { colors } from "@/constants/colors";
+import { colors } from "@/resources/colors";
 
 export { ErrorBoundary } from "expo-router";
 
 import { NavigationContainer } from "@react-navigation/native";
+import { PaperProvider } from "@/providers/paper-provider";
 export const unstable_settings = { initialRouteName: "(tabs)" };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -29,26 +30,29 @@ export default function RootLayout() {
   }, [error]);
 
   useEffect(() => {
-    if (loaded) SplashScreen.hideAsync();
+    
+    if (loaded) SplashScreen.hideAsync()
   }, [loaded]);
 
   if (!loaded) return null;
   return (
-    <NavigationContainer>
+    // <NavigationContainer>
       <RootLayoutNav />
-    </NavigationContainer>
+    // </NavigationContainer>
   );
 }
 
 function RootLayoutNav() {
   const { t } = useTranslation();
   const colorScheme = useColorScheme();
+    const themeKey = (colorScheme ?? "light") as "light" | "dark";
+
 
   return (
-    <ThemeProvider value={colors[colorScheme || "light"] as unknown as Theme}>
-      <PaperProvider theme={colors[colorScheme || "light"]}>
+    <ThemeProvider value={colors[themeKey] as unknown as Theme}>
+      <PaperProvider>
         <SnackbarProvider>
-          <Stack>
+          <Stack >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="modal/(product)/[id]"
@@ -61,10 +65,10 @@ function RootLayoutNav() {
               name="modal/recipe-generator"
               options={{
                 headerStyle: {
-                  backgroundColor: colors[colorScheme || "light"].colors.surface,
+                  backgroundColor: colors[themeKey].colors.surface,
                 },
                 headerTitleStyle: {
-                  color: colors[colorScheme || "light"].colors.onSurface,
+                  color: colors[themeKey].colors.onSurface,
                 },
                 presentation: "modal",
                 headerTitle: t("recipe_generator.title"),

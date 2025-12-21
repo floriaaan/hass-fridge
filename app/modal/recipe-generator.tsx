@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { ScrollView } from "react-native";
+import { ScrollView, Touchable, TouchableOpacity } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { useAsyncStorage } from "@/hooks/useAsyncStorage";
@@ -7,6 +7,7 @@ import { TodoItem } from "@/types/TodoItem";
 import { useEffect, useState } from "react";
 import { getCompletion } from "@/libs/ai/completion";
 import { buildPrompt } from "@/libs/ai/prompt";
+import { Button } from "react-native-paper";
 
 export default function RecipeGenerator() {
   const { t, i18n } = useTranslation();
@@ -22,6 +23,7 @@ export default function RecipeGenerator() {
 
     console.log("key", openai_key);
 
+    // TODO; ajouter un regénérer les recettes en excluant les recettes déjà générées
     if (!hasGenerated && openai_key)
       getCompletion(openai_key, buildPrompt(products, i18n.language))
         .then((res) => {
@@ -34,7 +36,7 @@ export default function RecipeGenerator() {
     return () => {
       setHasGenerated(false);
     };
-  }, []);
+  }, [hasGenerated]);
 
   return (
     <>
@@ -47,6 +49,10 @@ export default function RecipeGenerator() {
         <ScrollView style={{ flex: 1, flexGrow: 1, gap: 16 }}>
           <Text>{products.length}</Text>
           <Text>{i18n.language}</Text>
+          <Button onPress={() => setHasGenerated(false)}>
+            <Text>Generate Recipe</Text>
+          </Button>
+          <Text>{hasGenerated ? "Generated" : "Not generated"}</Text>
           <Text>{recipe}</Text>
         </ScrollView>
       </View>
